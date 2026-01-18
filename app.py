@@ -215,7 +215,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-st.sidebar.title("📌 Insight Menu")
+st.sidebar.title("Main Menu")
 
 # Initialize session state for menu
 if "menu" not in st.session_state:
@@ -223,12 +223,12 @@ if "menu" not in st.session_state:
 
 # Menu options
 menu_options = [
-    ("🏠", "Overview"),
-    ("💬", "Word Insights"),
-    ("😊😠", "Positive vs Negative"),
-    ("📊", "Category Performance"),
-    ("⚠️", "Problem Products"),
-    ("⚙️", "Settings / Data Loader"),
+    ("Overview"),
+    ( "Word Insights"),
+    ("Sentiment Analysis"),
+    ("Category Performance"),
+    ("Problem Products"),
+    ("Settings / Data Loader"),
 ]
 
 # Create button-style menu
