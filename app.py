@@ -6,7 +6,7 @@ import plotly.graph_objects as go
 
 st.set_page_config(
     page_title="Tokopedia Reviews Insight Dashboard",
-    page_icon="📊",
+    page_icon="",
     layout="wide",
 )
 
@@ -81,7 +81,7 @@ def show_kpis(df_word=None, df_cat=None, df_avg=None):
     if df_avg is not None and len(df_avg) > 0 and "avg_rating" in df_avg.columns:
         best = df_avg.sort_values("avg_rating", ascending=False).iloc[0]
         st.info(
-            f"⭐ Best avg rating category: **{best['category']}** "
+            f"Best avg rating category: **{best['category']}** "
             f"(avg **{best['avg_rating']:.2f}**, reviews **{int(best['review_count']):,}**)"
         )
 
@@ -111,7 +111,7 @@ def dataframe_with_download(df: pd.DataFrame, filename: str):
     st.dataframe(df, use_container_width=True, height=420)
     csv_bytes = df.to_csv(index=False).encode("utf-8")
     st.download_button(
-        "⬇️ Download CSV",
+        "Download CSV",
         data=csv_bytes,
         file_name=filename,
         mime="text/csv",
@@ -246,7 +246,7 @@ topn = st.sidebar.slider("Top-N to Display", min_value=10, max_value=100, value=
 # ---------- Data Loader (paths / uploads) ----------
 st.title("Tokopedia Reviews Insight Dashboard")
 
-with st.expander("📂 Data Sources (click to configure)", expanded=(menu == "Settings / Data Loader")):
+with st.expander("Data Sources (click to configure)", expanded=(menu == "Settings / Data Loader")):
     src_word = resolve_file("Word Count", DEFAULT_FILES["Word Count"])
     src_pos  = resolve_file("Positive Words", DEFAULT_FILES["Positive Words"])
     src_neg  = resolve_file("Negative Words", DEFAULT_FILES["Negative Words"])
@@ -293,7 +293,7 @@ errs = [
     ("Avg Rating", err_avg),
     ("Problem Products", err_prob),
 ]
-with st.expander("⚠️ Data Load Status", expanded=False):
+with st.expander("Data Load Status", expanded=False):
     for name, e in errs:
         if e:
             st.error(f"{name}: {e}")
@@ -314,15 +314,15 @@ if menu == "Overview":
     colA, colB = st.columns(2)
     with colA:
         if df_cat is not None and not df_cat.empty:
-            bar_chart(df_cat, "category", "review_count", f"📦 Top {topn} Categories by Review Volume", topn=topn, color_scheme="blues")
-            st.caption("💡 Kategori dengan ulasan tertinggi = demand tinggi → prioritas stok & marketing")
+            bar_chart(df_cat, "category", "review_count", f"Top {topn} Categories by Review Volume", topn=topn, color_scheme="blues")
+            st.caption("Kategori dengan ulasan tertinggi = demand tinggi → prioritas stok & marketing")
         else:
             st.warning("Category count not loaded.")
 
     with colB:
         if df_avg is not None and not df_avg.empty and {"category", "avg_rating"}.issubset(df_avg.columns):
             d = df_avg.sort_values("avg_rating", ascending=False).head(topn)
-            st.subheader(f"⭐ Top {topn} Categories by Avg Rating")
+            st.subheader(f"Top {topn} Categories by Avg Rating")
             
             fig = px.bar(d, x="avg_rating", y="category", orientation='h',
                          labels={"category": "Category", "avg_rating": "Average Rating"},
@@ -337,12 +337,12 @@ if menu == "Overview":
                 margin=dict(l=20, r=20, t=40, b=20)
             )
             st.plotly_chart(fig, use_container_width=True)
-            st.caption("💡 Rating tinggi = kualitas stabil. Rating rendah = perlu audit QC & seller")
+            st.caption("Rating tinggi = kualitas stabil. Rating rendah = perlu audit QC & seller")
         else:
             st.warning("Avg rating per category not loaded / columns mismatch.")
 
     st.markdown("---")
-    st.subheader("🎯 Strategic Recommendations")
+    st.subheader("Strategic Recommendations")
     col1, col2, col3 = st.columns(3)
     with col1:
         st.success("**High Volume + High Rating**\n\nPrioritas promosi")
@@ -352,7 +352,7 @@ if menu == "Overview":
         st.info("**Low Volume + High Rating**\n\nNiche potensial")
 
 elif menu == "Word Insights":
-    st.subheader("💬 Word Insights")
+    st.subheader("Word Insights")
 
     if df_word is None or df_word.empty:
         st.warning("Word count data not loaded.")
@@ -361,54 +361,54 @@ elif menu == "Word Insights":
 
         top_words = df_word.head(10)["word"].astype(str).tolist()
         st.info(f"**Top 10:** {', '.join(top_words)}")
-        st.caption("💡 Kata dominan menunjukkan tema utama review & driver kepuasan pelanggan")
+        st.caption("Kata dominan menunjukkan tema utama review & driver kepuasan pelanggan")
 
-        st.markdown("### 📊 Detail Data")
+        st.markdown("### Detail Data")
         dataframe_with_download(df_word.head(topn), "top_words.csv")
 
 elif menu == "Positive vs Negative":
-    st.subheader("😊 Positive vs 😠 Negative Words")
-    st.caption("💡 Driver kepuasan vs akar keluhan untuk aksi perbaikan yang tepat")
+    st.subheader("Positive vs Negative Words")
+    st.caption("Driver kepuasan vs akar keluhan untuk aksi perbaikan yang tepat")
 
     c1, c2 = st.columns(2)
 
     with c1:
-        st.markdown("### 😊 Positive (rating ≥ 4)")
+        st.markdown("### Positive (rating ≥ 4)")
         if df_pos is None or df_pos.empty:
             st.warning("Positive words data not loaded.")
         else:
             bar_chart(df_pos, "word", "count", f"Top {topn} Positive Words", topn=topn, color_scheme="greens")
-            st.caption("✅ Jadikan selling points untuk marketing & copywriting")
+            st.caption("Jadikan selling points untuk marketing & copywriting")
             dataframe_with_download(df_pos.head(topn), "positive_words_top.csv")
 
     with c2:
-        st.markdown("### 😠 Negative (rating ≤ 2)")
+        st.markdown("### Negative (rating ≤ 2)")
         if df_neg is None or df_neg.empty:
             st.warning("Negative words data not loaded.")
         else:
             bar_chart(df_neg, "word", "count", f"Top {topn} Negative Words", topn=topn, color_scheme="reds")
-            st.caption("⚠️ Root cause keluhan → perkuat QC & validasi seller")
+            st.caption("Root cause keluhan → perkuat QC & validasi seller")
             dataframe_with_download(df_neg.head(topn), "negative_words_top.csv")
 
 
 
 elif menu == "Category Performance":
-    st.subheader("📊 Category Performance")
-    st.caption("💡 Potensi pasar (volume) vs kualitas pengalaman (rating) per kategori")
+    st.subheader("Category Performance")
+    st.caption("Potensi pasar (volume) vs kualitas pengalaman (rating) per kategori")
 
     left, right = st.columns(2)
 
     with left:
-        st.markdown("### 📦 Review Volume per Category")
+        st.markdown("### Review Volume per Category")
         if df_cat is None or df_cat.empty:
             st.warning("Category count not loaded.")
         else:
             bar_chart(df_cat, "category", "review_count", f"Top {topn} Categories", topn=topn, color_scheme="blues")
-            st.caption("✅ Prioritas marketing & stok")
+            st.caption("Prioritas marketing & stok")
             dataframe_with_download(df_cat.head(topn), "category_review_count_top.csv")
 
     with right:
-        st.markdown("### ⭐ Avg Rating per Category")
+        st.markdown("### Avg Rating per Category")
         if df_avg is None or df_avg.empty or not {"category", "avg_rating", "review_count"}.issubset(df_avg.columns):
             st.warning("Avg rating per category not loaded / columns mismatch.")
         else:
@@ -427,11 +427,11 @@ elif menu == "Category Performance":
                 margin=dict(l=20, r=20, t=40, b=20)
             )
             st.plotly_chart(fig, use_container_width=True)
-            st.caption("⚠️ Rating rendah perlu audit QC & seller")
+            st.caption("Rating rendah perlu audit QC & seller")
             dataframe_with_download(d, "category_avg_rating_top.csv")
 
     st.markdown("---")
-    st.subheader("🎯 Category Opportunity Matrix")
+    st.subheader("Category Opportunity Matrix")
 
     if (df_cat is not None and not df_cat.empty) and (df_avg is not None and not df_avg.empty):
         m = pd.merge(df_cat, df_avg, on="category", how="inner", suffixes=("", "_avg"))
@@ -473,7 +473,7 @@ elif menu == "Category Performance":
         with col4:
             st.error("**Low Vol + Low Rating**\n\nEvaluasi")
 
-        st.markdown("### 📋 Detail Matrix")
+        st.markdown("### Detail Matrix")
         st.dataframe(
             m.sort_values(["review_count", "avg_rating"], ascending=[False, False]).head(50),
             use_container_width=True,
@@ -483,8 +483,8 @@ elif menu == "Category Performance":
         st.info("Load Category Count & Avg Rating first.")
 
 elif menu == "Problem Products":
-    st.subheader("⚠️ Problem Products")
-    st.caption("💡 Early warning: produk dengan rating rendah terbanyak → risiko retur & reputasi")
+    st.subheader("Problem Products")
+    st.caption("Early warning: produk dengan rating rendah terbanyak → risiko retur & reputasi")
 
     if df_prob is None or df_prob.empty:
         st.warning("Problem products data not loaded.")
@@ -492,12 +492,12 @@ elif menu == "Problem Products":
         bar_chart(df_prob, "product_name", "negative_review_count", f"Top {topn} Problem Products", topn=topn, color_scheme="reds")
 
         top_prod = df_prob.head(5)["product_name"].astype(str).tolist()
-        st.error(f"🚨 **Prioritas investigasi:** {', '.join(top_prod)}")
-        st.caption("✅ Cek: deskripsi, QC, packaging, SLA pengiriman")
+        st.error(f"**Prioritas investigasi:** {', '.join(top_prod)}")
+        st.caption("Cek: deskripsi, QC, packaging, SLA pengiriman")
 
-        st.markdown("### 📋 Detail Data")
+        st.markdown("### Detail Data")
         dataframe_with_download(df_prob.head(topn), "problem_products_top.csv")
 
 else:
-    st.subheader("⚙️ Settings / Data Loader")
+    st.subheader("Settings / Data Loader")
     st.info("Atur file path atau upload CSV melalui panel **Data Sources** di atas. Pastikan format CSV dengan header.")
