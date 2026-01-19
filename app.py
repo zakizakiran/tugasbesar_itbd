@@ -223,17 +223,17 @@ if "menu" not in st.session_state:
 
 # Menu options
 menu_options = [
-    ("Overview"),
-    ( "Word Insights"),
-    ("Sentiment"),
-    ("Category Performance"),
-    ("Problem Products"),
-    ("Settings / Data Loader"),
+    "Overview",
+    "Word Insights",
+    "Sentiment",
+    "Category Performance",
+    "Problem Products",
+    "Settings / Data Loader",
 ]
 
 # Create button-style menu
 st.sidebar.markdown('<div style="margin-top: 10px;">', unsafe_allow_html=True)
-for icon, label in menu_options:
+for label in menu_options:
     if st.sidebar.button(f"{label}", key=f"btn_{label}", use_container_width=True):
         st.session_state.menu = label
 
