@@ -225,7 +225,7 @@ if "menu" not in st.session_state:
 menu_options = [
     ("Overview"),
     ( "Word Insights"),
-    ("Sentiment Analysis"),
+    ("Sentiment"),
     ("Category Performance"),
     ("Problem Products"),
     ("Settings / Data Loader"),
