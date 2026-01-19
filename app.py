@@ -366,7 +366,7 @@ elif menu == "Word Insights":
         st.markdown("### Detail Data")
         dataframe_with_download(df_word.head(topn), "top_words.csv")
 
-elif menu == "Positive vs Negative":
+elif menu == "Sentiment":
     st.subheader("Positive vs Negative Words")
     st.caption("Driver kepuasan vs akar keluhan untuk aksi perbaikan yang tepat")
 
